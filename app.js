@@ -9,18 +9,34 @@
 // const NINE = document.getElementById("nine");
 // const ZERO = document.getElementById("zero");
 
-// const PLUS = document.getElementById("addition");
-// const MINUS = document.getElementById("sub");
-// const MULTI = document.getElementById("multi");
-// const POWER = document.getElementById("power");
-// const SLASH = document.getElementById("division");
-// const EQUALS = document.getElementById("equals");
+const EQUALS = document.getElementById("equals");
+
+const OPERATIONS = {
+  PLUS: document.getElementById("addition"),
+  MINUS: document.getElementById("sub"),
+  MULTI: document.getElementById("multi"),
+  POWER: document.getElementById("power"),
+  SLASH: document.getElementById("devision"),
+};
+
+// const operation_array = [
+//   OPERATIONS.PLUS,
+//   OPERATIONS.MINUS,
+//   OPERATIONS.MULTI,
+//   OPERATIONS.POWER,
+//   OPERATIONS.SLASH,
+//   OPERATIONS.EQUALS,
+// ];
 
 const INPUT = document.getElementById("input");
 
 const BUTTON = document.getElementsByClassName("btn");
 
 let inputValue = [];
+
+let beforeCalculation = [];
+
+let previousValue = [];
 
 let x, y;
 
@@ -48,15 +64,37 @@ let calc = {
   },
 };
 
-/********************************
- * TASKS:
- * write a for loop that iterates over all of the buttons and adds to them an EVENTLISTER
- * refactor the eventHandler function in a way that you can give it the index and it changes
- *******************************/
-
 for (let i = 0; i < BUTTON.length; i++) {
   BUTTON[i].addEventListener("click", (e) => {
     inputValue.push(e.target.innerHTML);
     INPUT.value = inputValue.join("");
   });
 }
+
+for (let operation in OPERATIONS) {
+  OPERATIONS[operation].addEventListener("click", (e) => {
+    let value = INPUT.value;
+    value = value
+      .split("")
+      .slice(0, value.length - 1)
+      .join("");
+    if (value.length === 0) {
+      beforeCalculation.push([value]);
+      beforeCalculation.push([e.target.innerHTML]);
+    }
+    beforeCalculation.push([
+      value.split("").slice(0, previousValue.length + 1),
+    ]);
+    beforeCalculation.push([e.target.innerHTML]);
+    console.log(beforeCalculation);
+    previousValue = value;
+    console.log(previousValue);
+  });
+}
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Backspace") {
+    inputValue.pop();
+    INPUT.value = inputValue.join("");
+  }
+});
